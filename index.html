@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/89/three.min.js"></script>
+    <style>
+        body{
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        caminar = { N: 0, S: 0, E: 0, O: 0, espacio: 0 }
+
+        graficos()
+        crearPiramide()
+        eventos()
+
+        render()
+        function graficos() {
+            reloj = new THREE.Clock()
+            escena = new THREE.Scene()
+            escena.background = new THREE.Color(0xDAA520)
+            camara = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.2, 5000)
+            camara.position.set(0, 30, 70)
+            camara.lookAt(new THREE.Vector3(0, 0, 0))
+            luz = new THREE.PointLight(0x000000, 10)
+            luz.position.set(0, 300, 200)
+            escena.add(luz)
+            renderer = new THREE.WebGLRenderer({ antialias: true })
+            renderer.setSize(window.innerWidth, window.innerHeight)
+            document.body.appendChild(renderer.domElement)
+        }
+        function crearPiramide() {
+            //figura=new THREE.Mesh(new THREE.BoxGeometry,new THREE.MeshBasicMaterial({color:0x000000}))
+            figura = new THREE.Mesh(new THREE.CylinderGeometry(0, 4, 10), new THREE.MeshBasicMaterial({ color: 0x000000 }))
+            figura.position.set(0, 20, 0)
+            //figura.scale.set(50,2,500)
+            escena.add(figura)
+        }
+        function render() {
+            movimiento()
+            renderer.render(escena, camara)
+            requestAnimationFrame(render)
+        }
+        function eventos() {
+            window.addEventListener("keydown", tecla)
+            window.addEventListener("keyup", arriba)
+        }
+        function tecla(doxeado) {
+            switch (doxeado.key) {
+                case "w":
+                    caminar.N = 1
+                    break;
+                case "s":
+                    caminar.S = 1
+                    break;
+                case "a":
+                    caminar.E = 1
+                    break;
+                case "d":
+                    caminar.O = 1
+                    break;
+                case "space":
+                    caminar.espacio = 30
+                    break;
+                default:
+                    break;
+            }
+        }
+        function arriba(doxeado) {
+            switch (doxeado.key) {
+                case "w":
+                    caminar.N = 0
+                    break;
+                case "s":
+                    caminar.S = 0
+                    break;
+                case "a":
+                    caminar.E = 0
+                    break;
+                case "d":
+                    caminar.O = 0
+                    break;
+                case "space":
+                    caminar.espacio = 0
+                    break;
+                default:
+                    break;
+            }
+        }
+        function movimiento() {
+            x = caminar.E - caminar.O
+            z = caminar.N - caminar.S
+            figura.translateX(x)
+            figura.translateZ(z)
+            figura.translateY(caminar.espacio)
+
+        }
+    </script>
+</body>
+
+</html>
